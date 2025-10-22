@@ -28,7 +28,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
         
     - name: Build application
-      run: mvn clean package -DskipTests -B -Dcheckstyle.skip=true
+      run: mvn clean package -DskipTests -B
       
     - name: Create deployment package
       run: |
