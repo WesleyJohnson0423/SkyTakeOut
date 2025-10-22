@@ -1,42 +1,40 @@
 name: CI/CD Pipeline
 
-# 触发条件：推送到main分支或创建Pull Request时
+# Trigger conditions: push to main/develop branches or create Pull Request
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
-# 设置权限
+# Set permissions
 permissions:
   contents: read
   actions: read
   checks: write
   pull-requests: write
 
-# 定义作业
+# Define jobs
 jobs:
-  # 构建和测试作业
+  # Build and test job
   build-and-test:
-    # 运行环境
+    # Runtime environment
     runs-on: ubuntu-latest
     
-    # 暂时不配置数据库服务
-    
-    # 步骤
+    # Steps
     steps:
-    # 1. 检出代码
+    # 1. Checkout code
     - name: Checkout code
       uses: actions/checkout@v4
       
-    # 2. 设置Java环境
+    # 2. Set up Java environment
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
         java-version: '8'
         distribution: 'temurin'
         
-    # 3. 缓存Maven依赖
+    # 3. Cache Maven dependencies
     - name: Cache Maven dependencies
       uses: actions/cache@v3
       with:
@@ -44,27 +42,19 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
         
-    # 4. 构建项目
+    # 4. Build project
     - name: Build with Maven
       run: mvn clean compile -B
       
-    # 5. 运行测试（跳过需要数据库的测试）
+    # 5. Run tests (only sky-server module)
     - name: Run tests
-      run: mvn test -B -Dtest="!*IntegrationTest,!*ServiceTest" || echo "Tests completed with some failures"
+      run: mvn test -B -pl sky-server -DfailIfNoTests=false
       
-    # 6.5. 跳过代码质量检查（暂时）
-    - name: Skip code quality checks
-      run: echo "Code quality checks temporarily disabled"
-      
-    # 7. 生成测试报告（暂时跳过）
-    - name: Skip test report generation
-      run: echo "Skipping test report generation due to permissions"
-        
-    # 8. 打包项目
+    # 6. Package application
     - name: Package application
       run: mvn package -DskipTests -B
       
-    # 9. 上传构建产物
+    # 7. Upload build artifacts
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
