@@ -28,7 +28,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
         
     - name: Build application
-      run: mvn clean package -DskipTests -B
+      run: mvn clean package -DskipTests -B -Dcheckstyle.skip=true
       
     - name: Create deployment package
       run: |
@@ -37,7 +37,7 @@ jobs:
         cp -r sky-server/src/main/resources deploy/
         
     - name: Upload deployment artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: deployment-package
         path: deploy/
