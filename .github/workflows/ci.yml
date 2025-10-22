@@ -46,15 +46,19 @@ jobs:
     - name: Build with Maven
       run: mvn clean compile -B
       
-    # 5. Run tests (only sky-server module)
+    # 5. Install dependencies to local repository
+    - name: Install dependencies
+      run: mvn install -B -pl sky-common,sky-pojo -DskipTests
+      
+    # 6. Run tests (only sky-server module)
     - name: Run tests
       run: mvn test -B -pl sky-server -DfailIfNoTests=false
       
-    # 6. Package application
+    # 7. Package application
     - name: Package application
       run: mvn package -DskipTests -B
       
-    # 7. Upload build artifacts
+    # 8. Upload build artifacts
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
