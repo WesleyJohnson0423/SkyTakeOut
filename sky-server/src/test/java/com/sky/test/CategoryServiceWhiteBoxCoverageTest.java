@@ -88,6 +88,7 @@ class CategoryServiceWhiteBoxCoverageTest {
         
         when(mockPage.getTotal()).thenReturn(1L);
         when(mockPage.getResult()).thenReturn(mockList);
+        //use sql query data define in CategoryMapper.xml
         when(categoryMapper.pageQuery(any(CategoryPageQueryDTO.class))).thenReturn(mockPage);
 
         // When
